@@ -33,12 +33,32 @@ Blog.init({
     timestamps: false,
     modelName: 'blog'
 })
+Blog.sync()
 
 const app = express()
 app.use(express.json())
+
 app.get('/api/blogs', async (req, res) => {
     const blogs = await Blog.findAll()
-    res.send(blogs)
+    res.json(blogs)
+})
+
+app.post('/api/blogs', async (req, res) => {
+    try {
+        const blog = await Blog.create(req.body)
+        res.json(blog)
+    } catch (error) {
+        res.status(400).json({error})
+    }
+})
+
+app.delete('/api/blogs/:id', async (req, res) => {
+    const delete_rows = await Blog.destroy({ where: { id: Number.parseInt(req.params.id) } })
+    if (delete_rows == 1) {
+        res.status(204).end()
+    } else {
+        res.status(404).end()
+    }
 })
 
 const PORT = process.env.PORT | 3001
