@@ -7,7 +7,13 @@ const router = express.Router()
 const { SECRET } = require('../utils/config')
 
 router.get('/', async (req, res) => {
-    const blogs = await Blog.findAll()
+    const blogs = await Blog.findAll({
+        attributes: { exclude: ['UserId'] },
+        include: {
+            model: User,
+            attributes: ['name']
+        }
+    })
     res.json(blogs)
 })
 
