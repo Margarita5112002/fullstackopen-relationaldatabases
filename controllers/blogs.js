@@ -33,12 +33,17 @@ router.post('/', tokenExtractor, async (req, res) => {
 })
 
 router.delete('/:id', tokenExtractor, async (req, res) => {
-    const delete_rows = await Blog.destroy({ where: { id: Number.parseInt(req.params.id) } })
-    if (delete_rows == 1) {
-        res.status(204).end()
-    } else {
-        res.status(404).end()
+    const blog = await Blog.findByPk(req.params.id)
+    if (!blog) {
+        return res.status(404).end()
     }
+    if (blog.UserId != req.decodedToken.id) {
+        return res.status(401).json({ error: 'user cannot delete this blog' })
+    }
+    const delete_rows = await Blog.destroy({ 
+        where: { id: Number.parseInt(req.params.id) } 
+    })
+    if (delete_rows == 1) res.status(204).end()
 })
 
 const blogFinder = async (req, res, next) => {
