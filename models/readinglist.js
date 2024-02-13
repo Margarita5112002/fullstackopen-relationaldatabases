@@ -15,7 +15,7 @@ Readinglist.init({
         references: { model: 'users', key: 'id' }
     },
     blogId: {
-        type: DataTypes,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'blogs', key: 'id' }
     },
@@ -27,7 +27,7 @@ Readinglist.init({
     sequelize,
     underscored: true,
     timestamps: false,
-    model: 'readinglist'
+    modelName: 'readinglist'
 })
 
 module.exports = Readinglist

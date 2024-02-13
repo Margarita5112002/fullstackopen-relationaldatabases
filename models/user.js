@@ -23,7 +23,7 @@ User.init({
 }, {
     sequelize,
     underscored: true,
-    model: "user"
+    modelName: "user"
 })
 
 module.exports = User
