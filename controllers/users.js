@@ -11,10 +11,18 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const users = await User.findAll({
-        include: {
+        include: [{
             model: Blog,
             attributes: { exclude: ['UserId'] }
-        }
+        }, 
+        {
+            model: Blog,
+            as: 'readings',
+            attributes: { exclude: ['UserId'] },
+            through: {
+                attributes: []
+            }
+        }]
     })
     res.json(users)
 })
