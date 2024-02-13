@@ -10,6 +10,12 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
+    const where = {}
+
+    if (req.query.read) {
+        where.read = req.query.read === 'true'
+    }
+
     const users = await User.findAll({
         include: [{
             model: Blog,
@@ -20,7 +26,8 @@ router.get('/', async (req, res) => {
             as: 'readings',
             attributes: { exclude: ['userId'] },
             through: {
-                attributes: { exclude: ['userId', 'blogId'] }
+                attributes: { exclude: ['userId', 'blogId'] },
+                where
             }
         }]
     })

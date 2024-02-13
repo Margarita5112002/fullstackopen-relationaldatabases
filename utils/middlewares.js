@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const { SECRET } = require('./config')
+
 const errorHandler = async (error, req, res, next) => {
     console.log('error name', error.name)
     if (error.name === 'SequelizeValidationError') {
@@ -14,6 +17,20 @@ const errorHandler = async (error, req, res, next) => {
     next(error)
 }
 
+const tokenExtractor = async (req, res, next) => {
+    const authorization = req.get("authorization");
+    if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+      try {
+        req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+      } catch (error) {
+        return res.status(401).json({ error: "token invalid" });
+      }
+    } else {
+      return res.status(401).json({ error: "token missing" });
+    }
+    next();
+};
+
 module.exports = {
-    errorHandler
+    errorHandler, tokenExtractor
 }
